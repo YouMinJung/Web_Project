@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html>
+<html>    
+    	<head>
+        	<meta charset="UTF-8" />
+        	<title>HTML5 Runner Game</title>  
+    	</head>
+    	<body>
+        	<canvas id="PlayCanvas" width="1100" height="700" style="position: absolute; top: 40px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title1" width="500" height="100" style="position: absolute; top: 150px; left: 400px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title2" width="800" height="100" style="position: absolute; top: 550px; left: 250px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<script type = "text/javascript">
+
+			var url = "background_music/End_bgm.mp3"
+			var bgm = new Audio(url);
+			bgm.play();
+
+			var canvas1 = document.getElementById("PlayCanvas"); 
+			var myContext1 = canvas1.getContext("2d");
+			
+			var canvas2 = document.getElementById("title1");
+			var myContext2 = canvas2.getContext("2d");
+
+			var canvas3 = document.getElementById("title2");
+			var myContext3 = canvas3.getContext("2d");
+
+			var imgObj = new Image();
+			imgObj.src = "background_img/Game_Over_img.jpg";
+
+			imgObj.onload = function() 
+			{
+    				myContext1.drawImage(imgObj, 50, 50, 1000, 600);
+			}
+
+			myContext2.font = "italic 40pt Times New Roman"
+			myContext2.fillStyle = "#000000";
+			myContext2.fillText("Game Over...", 130, 70);
+
+			myContext3.font = "italic 30pt Times New Roman"
+			myContext3.fillStyle = "#000000";
+			myContext3.fillText("If you want to RESTART, Press Enter...", 100, 70);
+
+			document.onkeydown = function(event)
+			{
+				if(event.keyCode == 13)
+				{
+					location.replace("Play.html");
+				}
+			}
+
+		</script>
+    	</body>
+</html>
+

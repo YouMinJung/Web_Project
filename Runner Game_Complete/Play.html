@@ -1,0 +1,547 @@
+﻿<!DOCTYPE html>
+<html>    
+    	<head>
+        	<meta charset="UTF-8" />
+        	<title>HTML5 Runner Game</title>  
+    	</head>
+    	<body>
+        	<canvas id="PlayCanvas" width="1000" height="700" style="position: absolute; top: 40px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="Player" width="150" height="350" style="position: absolute; top: 250px; left: 200px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="text" width="850" height="150" style="position: absolute; top: 150px; left: 150px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="item" width="1000" height="350" style="position: absolute; top: 250px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="Over" width="1000" height="350" style="position: absolute; top: 250px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<script type = "text/javascript">
+
+			var localStorage = window.localStorage;
+			if(!localStorage)
+			{
+				alert("로컬스토리지를 지원하지 않습니다.");
+			}
+			var local=0; //로컬스토리지 지표
+
+			var url = "background_music/Chase_bgm.mp3"
+			var bgm = new Audio(url);
+			bgm.play();
+
+			var url2 = "background_music/gameover.mp3"
+			var bgm2 = new Audio(url2);
+
+			var url3 = "background_music/item_effect_bgm.mp3"
+			var bgm3 = new Audio(url3);
+			bgm3.volume = 1;
+
+			var url4 = "background_music/warning_bgm.mp3"
+			var bgm4 = new Audio(url4);
+			bgm4.volume = 1;
+
+			var url5 = "background_music/coin_bgm.mp3"
+			var bgm5 = new Audio(url5);
+			bgm5.volume = 1;
+		
+			var url6 = "background_music/bomb_bgm.mp3"
+			var bgm6 = new Audio(url6);
+			bgm6.volume = 1;
+
+			var url7 = "background_music/ooh_bgm.wav"
+			var bgm7 = new Audio(url7);
+			bgm7.volume = 1;
+
+			function wait(msec)
+			{
+				var start = new Date().getTime();
+				var cur = start;
+
+				while(cur-start < msec)
+				{
+					cur = new Date().getTime();
+				}
+			}
+
+			var GameState = 0; // 초깃값은 준비 상태, 1은 게임중, 2는 게임오버
+
+			var Game_time = 0;
+			var Game_Score = 0;
+			var life = 3; // 목숨
+
+			function game_time()
+			{
+				Game_time++;
+			}
+
+			var canvas1 = document.getElementById("PlayCanvas"); 
+			var myContext1 = canvas1.getContext("2d");
+			var x1 = 0;  //배경 x1좌표
+			var x2 = 1000;  //배경 x2좌표
+			var speed = 2; // 아이템 이동 스피드
+			var background_speed = 2; // 배경 이동 스피드
+			var background_x = 0; // 배경 x좌표
+
+			var canvas2 = document.getElementById("Player");
+			var myContext2 = canvas2.getContext("2d");
+
+			var img_Array=["player_img/P1.png", "player_img/P2.png", "player_img/P3.png", "player_img/P4.png", "player_img/P5.png"];
+			var img_Index=0;
+			var character_num = 0; // 캐릭터가 바뀌는 지표
+			var y = 180;  // 점프 지표
+			var delta = 6;  //점프 빠르기
+			
+			var player = new Image();
+			player.src = "player_img/P.png";
+			var jump_player = new Image();
+			jump_player.src = "player_img/Jump.png";
+
+			player.onload = function() 
+			{
+    				myContext2.drawImage(player, 0, 170, 200, 200);
+			}
+
+			function change_player()
+			{
+				if(character_num == 0)
+				{
+					wait(3000);
+					character_num++;
+				}
+
+				var p = new Image();
+				var image = img_Array[img_Index];
+				p.src = image;
+
+				myContext2.clearRect(0, 0, canvas2.width, canvas2.height);
+
+				myContext2.drawImage(p, 0, 170, 150, 200);
+				img_Index++;
+	
+				if(img_Index >= img_Array.length)
+				{
+					img_Index=0;
+				}
+			}
+	
+			var canvas3 = document.getElementById("text"); 
+			var myContext3 = canvas3.getContext("2d");
+
+			var canvas4 = document.getElementById("item"); 
+			var myContext4 = canvas4.getContext("2d");
+
+			var canvas5 = document.getElementById("Over"); 
+			var myContext5 = canvas5.getContext("2d");
+
+			var imgObj = new Image();
+			imgObj.src = "background_img/background_img.png";
+	
+			imgObj.onload = function() 
+			{
+    				myContext1.drawImage(imgObj, 50, 50, 1000, 600);
+
+				var txt = "3 Sec Later, Game Will Start...";
+
+				myContext3.font = "italic 30pt Times New Roman"
+				myContext3.fillStyle = "#000000";
+				myContext3.fillText(txt, 200, 70);	
+			
+				draw_background();
+			}
+
+			function draw_background(time)
+			{
+				myContext1.clearRect(0, 0, canvas1.width, canvas1.height);
+				myContext1.drawImage(imgObj, x1, 50, 1000, 600);
+				myContext1.drawImage(imgObj, x2, 50, 1000, 600);
+	
+				x1 -= background_speed;
+				x2 -= background_speed;
+
+				if(x2 == 0)
+				{
+					x1 = 1000;
+					myContext1.drawImage(imgObj, x1, 50, 1000, 600);
+					x1 -= background_speed;
+				}
+
+				if(x1 == 0)
+				{
+					x2 = 1000;
+					myContext1.drawImage(imgObj, x2, 50, 1000, 600);
+					x2 -= background_speed;
+				}
+
+				background_x += speed;
+		
+				requestAnimationFrame(draw_background);
+			}
+
+			function time1()
+			{
+				myContext3.clearRect(0, 0, canvas3.width, canvas3.height);
+				
+				setTimeout(game_time, 2000);
+				myContext3.font = "bold 20pt Courier New"
+				myContext3.fillStyle = "#000000";
+				myContext3.fillText("Time : "+Game_time, 40, 30);
+				myContext3.fillText("Score : "+Game_Score, 40, 70);
+				myContext3.fillText("life : "+life, 40, 110);
+			}
+
+			setInterval(time1, 500);
+			GameState++;
+
+			
+
+			function draw_jump(time) 
+			{
+				myContext2.clearRect(0, 0, canvas2.width, canvas2.height);
+
+				myContext2.drawImage(jump_player, 0, y, 130, 130);
+				
+
+				if(y==0)
+				{
+					delta = -delta;
+				}
+
+				y -= delta;
+
+				if(y==180)
+				{
+					delta = -delta;
+					return;
+				}
+
+				requestAnimationFrame(draw_jump);
+			}
+
+			var item_array = new Array();
+			var item_img = ["item_img/bomb.png", "item_img/coin.png", "item_img/coinbox.png", "item_img/fire.png", 
+							"item_img/item.png", "item_img/ice.png", "item_img/surigum.png", "item_img/flag.png"];
+			var item_Index = 0;
+			var item_time=0;
+			var i_y = 0;
+			var i_x = 1000;
+			var bgmflag = 0; // 종료 bgm 한번만 재생
+
+			for(item_time=0; item_time < 60; item_time++)
+			{
+				var random = 1 + Math.floor(Math.random()*7);
+						
+				switch(random)
+				{
+					case 1 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 0;
+						break;
+
+					case 2 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 1;
+						break;
+
+					case 3 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 2;
+						break;
+
+					case 4 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 3;
+						break;
+
+					case 5 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 4;
+						break;
+
+					case 6 :
+						i_y = 230;
+						item_Index = 5;
+						break;
+
+					case 7 :
+						i_y = 1 + Math.floor(Math.random()*230);
+						item_Index = 6;
+						break;
+				};
+					
+				item_array.push( {index: item_Index, x: i_x, y: i_y} );
+				i_x = i_x + Math.floor(Math.random()*300)+200;
+
+				myContext4.drawImage(item, item_array[item_time].x, item_array[item_time].y, 150, 150);
+			}
+			item_time++;
+			item_array.push( {index: 7, x: 22000, y: 135} );
+
+			function collision(intx, inty)
+			{
+  				if(intx > 90  && intx < 170 && inty+50 > y && inty-90 < y)
+  				{
+    					return true;
+  				}
+    
+  				return false;
+			}
+
+			function draw_item(time)
+			{
+				myContext4.clearRect(0, 0, canvas4.width, canvas4.height);
+
+				for(var i = 0; i<item_time; i++)
+				{
+					var item = new Image();
+					var i_index = item_array[i].index;
+					var image = item_img[i_index];
+					item.src = image;
+
+					if(item_array[i].index == 7)
+					{
+						myContext4.drawImage(item, item_array[i].x, item_array[i].y, 250, 250);
+					}
+					else
+					{
+						myContext4.drawImage(item, item_array[i].x, item_array[i].y, 150, 150);
+					}
+
+					if(item_array[i].index == 6)
+					{
+						item_array[i].x -= speed + 2;
+					}
+					else 
+					{
+						item_array[i].x -= speed;
+					}
+					
+					
+					if(background_x > 22000)
+					{
+						item_array[i].x += 1000;
+						item_array[i].y += 1000;
+
+						speed = 0;
+						background_speed = 0;
+				
+						if(!localStorage.getItem('LOCAL'))
+						{
+							local = 1;
+							localStorage.setItem('LOCAL', local);
+						}
+						else
+						{
+							local = localStorage.getItem('LOCAL', local);
+						}
+						localStorage.setItem('TIME'+[local], Game_time);
+						localStorage.setItem('SCORE'+[local], Game_Score + (life * 100));
+						bgm.pause();
+						if (bgmflag == 0)
+						{
+							bgm3.play();
+							bgmflag = 1;
+						}
+						setTimeout(time3, 500);
+					}
+
+					if(collision(item_array[i].x, item_array[i].y))
+					{
+						item_array[i].x -= 1000;
+						item_array[i].y -= 1000;
+
+						if(item_array[i].index == 0) // bomb
+						{
+							bgm6.play();
+							Game_Score-=100;
+							life -= 1;
+							if(speed != 2)
+							{
+								speed-=2;
+							}
+							if(life == 1)
+							{
+								bgm4.play();
+							}
+							if(life == 0)
+							{
+								GameState++;
+								if(GameState==2)
+								{
+									game_over();
+							
+								}
+						
+							}
+						}
+						else if(item_array[i].index == 1) // coin
+						{
+							bgm5.play();
+							Game_Score+=20;
+						}
+						else if(item_array[i].index == 2) // coinbox
+						{
+							bgm5.play();
+							Game_Score+=100;
+							if(life < 5)
+							{
+								life += 1;
+							}
+						}
+						else if(item_array[i].index == 3) // fire
+						{
+							bgm6.play();
+							Game_Score-=50;
+							life -= 1;
+							if(life == 1)
+							{
+								bgm4.play();
+							}
+							if(life == 0)
+							{
+								GameState++;
+								if(GameState==2)
+								{
+									game_over();
+								}
+						
+							}
+						}
+						else if(item_array[i].index == 4) // item
+						{
+							bgm3.play();
+							Game_Score+=300;
+							if(life <5)
+							{
+								life += 1;
+							}
+							if(speed < 10)
+							{
+								speed+=2;
+							}
+						}
+						else if(item_array[i].index == 5) // ice
+						{
+							bgm7.play();
+							Game_Score-=10;
+							life -= 1;
+							if(speed != 2)
+							{
+								speed-=2;
+							}
+							if(life == 1)
+							{
+								bgm4.play();
+							}
+							if(life == 0)
+							{
+								GameState++;
+								if(GameState==2)
+								{
+									game_over();
+								}
+						
+							}
+						}
+						else if(item_array[i].index == 6) // surigum
+						{
+							bgm7.play();
+							Game_Score-=5;
+							life -= 1;
+							if(life == 1)
+							{
+								bgm4.play();
+							}
+							if(life == 0)
+							{
+								GameState++;
+								if(GameState==2)
+								{
+									game_over();
+								}
+						
+							}
+						}
+						else if(item_array[i].index == 7) // flag
+						{
+							item_array[i].x += 1000;
+							item_array[i].y += 1000;
+							speed=0;
+							background_speed=0;
+							
+							if(!localStorage.getItem('LOCAL'))
+							{
+								local = 1;
+								localStorage.setItem('LOCAL', local);
+							}
+							else
+							{
+								local = localStorage.getItem('LOCAL', local);
+							}
+							localStorage.setItem('TIME'+[local], Game_time);
+							localStorage.setItem('SCORE'+[local], Game_Score + (life * 100));
+							bgm.pause();
+							bgm3.play();
+							setTimeout(time3, 2000);
+							
+						}
+						
+					}
+				}
+	
+				requestAnimationFrame(draw_item);
+			}
+  
+			if(GameState==1)
+			{
+				setInterval(change_player, 150);
+
+				var e = window.event;
+				document.onkeydown = function(e) 
+				{
+					if(e.keyCode == 32)
+					{
+						draw_jump();
+					}
+				}
+
+				draw_item();
+    			}
+
+			function time2()
+			{
+				location.replace("Over.html");
+			}
+			
+			function time3()
+			{
+				location.replace("Success.html");
+			}
+
+			function game_over()
+			{
+				bgm.pause();
+				bgm2.play();
+			
+				speed = 0;
+				background_speed = 0;
+
+				myContext5.font = "bold 50pt Courier New"
+				myContext5.fillStyle = "#FF0000";
+				myContext5.fillText("Time : "+Game_time, 300, 80);
+				myContext5.fillText("Score : "+Game_Score, 300, 160);
+
+				setTimeout(time2, 5000);
+			}
+			
+		</script>
+    	</body>
+</html> 

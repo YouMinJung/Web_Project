@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>    
+    	<head>
+        	<meta charset="UTF-8" />
+        	<title>HTML5 Runner Game</title>  
+    	</head>
+    	<body>
+        	<canvas id="PlayCanvas" width="1100" height="700" style="position: absolute; top: 40px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title1" width="500" height="100" style="position: absolute; top: 150px; left: 300px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title2" width="1000" height="200" style="position: absolute; top: 450px; left: 150px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title3" width="800" height="300" style="position: absolute; top: 250px; left: 250px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<script type = "text/javascript">
+
+			var localStorage = window.localStorage;
+			if(!localStorage)
+			{
+				alert("로컬스토리지를 지원하지 않습니다.");
+			}
+
+			var local = localStorage.getItem('LOCAL');
+			var time = localStorage.getItem('TIME'+[local]);
+			var score = localStorage.getItem('SCORE'+[local]);
+
+			var url = "background_music/Success_ending.mp3"
+			var bgm = new Audio(url);
+			bgm.play();
+
+			var canvas1 = document.getElementById("PlayCanvas"); 
+			var myContext1 = canvas1.getContext("2d");
+			
+			var canvas2 = document.getElementById("title1");
+			var myContext2 = canvas2.getContext("2d");
+
+			var canvas3 = document.getElementById("title2");
+			var myContext3 = canvas3.getContext("2d");
+
+			var canvas4 = document.getElementById("title3");
+			var myContext4 = canvas4.getContext("2d");
+
+
+			var imgObj = new Image();
+			imgObj.src = "background_img/Ending_img.jpg";
+
+			imgObj.onload = function() 
+			{
+    				myContext1.drawImage(imgObj, 50, 50, 1000, 600);
+			}
+
+			myContext2.font = "italic 40pt Times New Roman"
+			myContext2.fillStyle = "#FFFFFF";
+			myContext2.fillText("Game Complete !!!", 0, 70);
+
+			myContext3.font = "italic 30pt Times New Roman"
+			myContext3.fillStyle = "#FFFFFF";
+			myContext3.fillText("If you want to Try Again, Press Enter...", 70, 170);
+			myContext3.fillText("If you want to Go Main Page, Press SpaceBar...", 70, 100);
+
+			myContext4.font = "italic 20pt Times New Roman"
+			myContext4.fillStyle = "#58FAF4";
+			myContext4.fillText("Your Time : "+time, 100, 70);
+			myContext4.fillText("Your Score : "+score, 100, 120);
+
+			
+			document.onkeydown = function(event)
+			{
+				if(event.keyCode == 32)
+				{
+					var name = prompt("Please Input Your Name !!");
+					localStorage.setItem('NAME'+[local], name);
+					var num = parseInt(local)+1;
+					localStorage.setItem('LOCAL', num);
+					location.replace("Main.html");
+				}
+				else if(event.keyCode == 13)
+				{
+					var name = prompt("Please Input Your Name !!");
+					localStorage.setItem('NAME'+[local], name);
+					var num = parseInt(local)+1;
+					localStorage.setItem('LOCAL', num);
+					location.replace("Play.html");
+				}
+			}
+
+			
+
+		</script>
+    	</body>
+</html>
+

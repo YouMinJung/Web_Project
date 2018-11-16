@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html>    
+    	<head>
+        	<meta charset="UTF-8" />
+        	<title>HTML5 Runner Game</title>  
+    	</head>
+    	<body>
+        	<canvas id="GameCanvas" width="1100" height="700" style="position: absolute; top: 40px; left: 100px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="canvas" width="900" height="550" style="position: absolute; top: 140px; left: 200px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+	
+		<canvas id="canvas2" width="900" height="550" style="position: absolute; top: 140px; left: 200px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="title" width="500" height="100" style="position: absolute; top: 150px; left: 200px">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="start" width="300" height="80" style="position: absolute; top: 400px; left: 200px" 
+			onmouseover = "s_move_in()" onmouseout = "s_move_out()" onclick = "s_click()">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="manual" width="300" height="80" style="position: absolute; top: 500px; left: 200px" 
+			onmouseover = "m_move_in()" onmouseout = "m_move_out()" onclick = "m_click()">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<canvas id="rank" width="300" height="80" style="position: absolute; top: 600px; left: 200px" 
+			onmouseover = "r_move_in()" onmouseout = "r_move_out()" onclick = "r_click()">
+            	HTML5 Canvas를 지원하지 않습니다.
+		</canvas>
+
+		<script type = "text/javascript">
+
+			var localStorage = window.localStorage;
+			if(!localStorage)
+			{
+				alert("로컬스토리지를 지원하지 않습니다.");
+			}
+
+			var url = "background_music/Start_bgm.mp3"
+			var bgm = new Audio(url);
+			bgm.play();
+
+			
+			var img = new Image();
+			img.src = "background_img/manual_img.jpg";
+
+			var item1 = new Image();
+			item1.src = "item_img/coin.png";
+
+			var item2 = new Image();
+			item2.src = "item_img/coinbox.png";
+
+			var item3 = new Image();
+			item3.src = "item_img/item.png";
+
+			var item4 = new Image();
+			item4.src = "item_img/fire.png";
+
+			var item5 = new Image();
+			item5.src = "item_img/surigum.png";
+
+			var item6 = new Image();
+			item6.src = "item_img/ice.png";
+
+			var item7 = new Image();
+			item7.src = "item_img/bomb.png";
+
+			var item8 = new Image();
+			item8.src = "item_img/flag.png";
+
+			var x=350; // 텍스트 x좌표
+			var y=70; // 텍스트 y좌표
+
+			var canvas1 = document.getElementById("GameCanvas"); // 시작의 큰 배경
+			var myContext1 = canvas1.getContext("2d");
+
+			var canvas2 = document.getElementById("title");
+			var myContext2 = canvas2.getContext("2d");
+
+			var canvas3 = document.getElementById("start");  // 시작의 버튼 아이콘
+			var myContext3 = canvas3.getContext("2d");
+
+			var canvas4 = document.getElementById("manual");
+			var myContext4 = canvas4.getContext("2d");
+
+			var canvas5 = document.getElementById("canvas");
+			var myContext5 = canvas5.getContext("2d");
+		
+			var canvas6 = document.getElementById("rank");
+			var myContext6 = canvas6.getContext("2d");
+
+			var canvas7 = document.getElementById("canvas2");
+			var myContext7 = canvas7.getContext("2d");
+
+			var txt1 = "Game Start";
+			var txt2 = "< Runner Game >";
+			
+			var imgObj1 = new Image();
+			imgObj1.src = "background_img/Title_img.jpg";
+
+			imgObj1.onload = function() 
+			{
+    				myContext1.drawImage(imgObj1, 50, 50, 1000, 600);
+			}
+			
+			myContext2.font = "italic 50pt Times New Roman"
+			myContext2.fillStyle = "#5858FA";
+			myContext2.textAlign = "center";
+			myContext2.fillText(txt2, 260, 70);
+
+			myContext3.font = "bold 25pt Courier New";
+			myContext3.fillStyle = "#81F7F3";  
+			myContext3.fillText(txt1, 40, 50);
+
+			myContext4.font = "bold 25pt Courier New";
+			myContext4.fillStyle = "#81F7F3";  
+			myContext4.fillText("Manual", 80, 50);
+
+			myContext6.font = "bold 25pt Courier New";
+			myContext6.fillStyle = "#81F7F3";  
+			myContext6.fillText("Play List", 40, 50);
+  			
+			function s_move_in()
+			{				
+				myContext3.fillStyle = "#FF0000";
+				myContext3.fillText(txt1, 40, 50);
+			}
+
+			function s_move_out()
+			{
+				myContext3.fillStyle = "#81F7F3";
+				myContext3.fillText(txt1, 40, 50);
+			}
+
+			function m_move_in()
+			{				
+				myContext4.fillStyle = "#FF0000";
+				myContext4.fillText("Manual", 80, 50);
+			}
+
+			function m_move_out()
+			{
+				myContext4.fillStyle = "#81F7F3";
+				myContext4.fillText("Manual", 80, 50);
+			}
+
+			
+			function r_move_in()
+			{				
+				myContext6.fillStyle = "#FF0000";
+				myContext6.fillText("Play List", 40, 50);
+			}
+
+			function r_move_out()
+			{
+				myContext6.fillStyle = "#81F7F3";
+				myContext6.fillText("Play List", 40, 50);
+			}
+			
+			function s_click()
+			{
+				location.replace("Play.html");
+			}
+
+			function m_click()
+			{
+				myContext5.font = "bold 15pt Courier New";
+				myContext5.fillStyle = "#000000";
+
+				myContext5.drawImage(img, 0, 0, 900, 550);
+				
+				myContext2.clearRect(0, 0, canvas2.width, canvas2.height);
+				myContext3.clearRect(0, 0, canvas3.width, canvas3.height);
+				myContext4.clearRect(0, 0, canvas4.width, canvas4.height);
+				myContext6.clearRect(0, 0, canvas6.width, canvas6.height);
+				myContext7.clearRect(0, 0, canvas7.width, canvas7.height);
+				myContext3.fillStyle = "#81F7F3";
+				myContext3.fillText(txt1, 40, 50);
+				myContext4.fillStyle = "#81F7F3";
+				myContext4.fillText("Manual", 80, 50);
+				myContext6.fillStyle = "#81F7F3";
+				myContext6.fillText("Play List", 40, 50);
+				
+				myContext5.fillText("Game Manual", 390, 20);
+				myContext5.fillText("<< if you Press SpaceBar, Player can jump !! >>", 200, 50);
+
+				myContext5.drawImage(item1, 30, 60, 150, 150);
+				myContext5.fillText("* Coin Item", 50, 80);
+				myContext5.fillText("Score+20", 50, 100);
+
+				myContext5.drawImage(item2, 250, 60, 150, 150);
+				myContext5.fillText("* Coin Box Item", 200, 80);
+				myContext5.fillText("Score+100 AND Life+1", 200, 100);
+
+				myContext5.drawImage(item3, 550, 60, 150, 150);
+				myContext5.fillText("* Simbol Item", 500, 80);
+				myContext5.fillText("Score+300 AND Life+1 AND Speed+2", 500, 100);
+
+				myContext5.drawImage(item4, 70, 180, 150, 150);
+				myContext5.fillText("* Fire Obstacle", 50, 200);
+				myContext5.fillText("Score-50, Life-1", 50, 220);
+
+				myContext5.drawImage(item5, 350, 180, 150, 150);
+				myContext5.fillText("* Surigum", 300, 200);
+				myContext5.fillText("Score-5 AND Life-1", 300, 220);
+
+				myContext5.drawImage(item6, 620, 190, 150, 150);
+				myContext5.fillText("* Ice Obstacle", 580, 200);
+				myContext5.fillText("Score-10, Life-1, Speed-2", 580, 220);
+
+				myContext5.drawImage(item7, 600, 320, 150, 150);
+				myContext5.fillText("* Bomb", 550, 320);
+				myContext5.fillText("Score-100, Life-1, Speed-2", 550, 340);
+
+				myContext5.drawImage(item8, 360, 300, 150, 150);
+				myContext5.fillText("* Goal Flag", 350, 320);
+				myContext5.fillText("Complete Stage", 350, 340);
+				
+				myContext5.fillText("* life", 350, 440);
+				myContext5.fillText("Score+100", 350, 460);
+
+				myContext5.fillText("<< If you want to get out of this page, Press Enter. >>", 220, 500);  
+			}
+		
+			document.onkeydown = function(event)
+			{
+				if(event.keyCode == 13)
+				{
+					myContext5.clearRect(0, 0, canvas5.width, canvas5.height);
+					myContext7.clearRect(0, 0, canvas7.width, canvas7.height);
+					myContext2.fillText(txt2, 260, 70);
+					myContext3.fillText(txt1, 40, 50);
+					myContext4.fillText("Manual", 80, 50);
+					myContext6.fillText("Play List", 40, 50);
+					y=70;
+				}
+			}
+
+			function r_click()
+			{
+				y=70; x=350;
+				myContext7.font = "bold 15pt Courier New";
+				myContext7.fillStyle = "#000000";
+
+				myContext2.clearRect(0, 0, canvas2.width, canvas2.height);
+				myContext3.clearRect(0, 0, canvas3.width, canvas3.height);
+				myContext4.clearRect(0, 0, canvas4.width, canvas4.height);
+				myContext6.clearRect(0, 0, canvas6.width, canvas6.height);
+				myContext3.fillStyle = "#81F7F3";
+				myContext3.fillText("Game Start", 40, 50);
+				myContext4.fillStyle = "#81F7F3";
+				myContext4.fillText("Manual", 80, 50);
+				myContext6.fillStyle = "#81F7F3";
+				myContext6.fillText("Play List", 40, 50);
+
+				myContext7.drawImage(img, 0, 0, 900, 550);
+
+				myContext7.fillText("<< Play List >>", 390, 20);
+				myContext7.fillText("<< If you want to get out of this page, Press Enter. >>", 220, 520);
+
+				var a = 0;
+				if(localStorage.length/3 > 13)
+				{
+					a = parseInt(localStorage.length/3 - 12);
+				}
+
+				for(var k=1+a; k<localStorage.length/3+a; k++)
+				{
+					var txt1 = localStorage.getItem('NAME'+k);
+					var txt2 = localStorage.getItem('TIME'+k);
+					var txt3 = localStorage.getItem('SCORE'+k);
+					myContext7.fillText("Name : "+txt1, x, y);
+					y += 30;
+					myContext7.fillText("Time : "+txt2, x, y);
+					y += 30;
+					myContext7.fillText("Score : "+txt3, x, y);
+					y += 60;
+		
+					if(y==550)
+					{
+						x += 200;
+						y=70;
+					}			
+				
+				}
+			}
+			
+			
+		</script>
+    	</body>
+</html>
