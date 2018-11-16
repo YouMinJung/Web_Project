@@ -11,10 +11,10 @@
 #### Program Structure
 ![2](https://user-images.githubusercontent.com/21214309/48601360-dada7300-e9b2-11e8-8b19-10ff36421000.JPG)
 
-- 실행가능 : Chrome / Firefox
+- 실행가능 : Chrome (2018년 현재는 정책이 바뀌어 배경음악의 경우 자동 재생이 되지 ) / Firefox
 - 실행불가능 : Internet Explore / Microsoft Edge (로컬 스토리지 지원X)
 
-Video URL :
+Video URL : https://youtu.be/xbwgnTTJ2aA
 
 <br><br>
 
